@@ -1,0 +1,15 @@
+*.py[co]
+.DS_Store
+.idea
+*.swp*
+*~
+*.tmproj
+.env
+tmp
+app-messages/
+*.log
+media/
+staticfiles/
+*.db
+db.sqlite3
+venv
