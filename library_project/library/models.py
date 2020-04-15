@@ -1,6 +1,9 @@
-import uuid
+from __future__ import annotations
 
-from django.db import models
+import uuid
+from typing import List
+
+from django.db import models, transaction
 
 
 class AbstractBaseModel(models.Model):
@@ -22,3 +25,9 @@ class Author(AbstractBaseModel):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    @transaction.atomic
+    def bulk_create(author_names: List[str]) -> List[Author]:
+        authors = [Author(name=author_name) for author_name in author_names]
+
+        return Author.objects.bulk_create(authors)
