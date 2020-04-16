@@ -45,4 +45,7 @@ class Author(AbstractBaseModel):
     def bulk_create(author_names: List[str]) -> List[Author]:
         authors = [Author(name=author_name) for author_name in author_names]
 
+        for author in authors:
+            author.full_clean()
+
         return Author.objects.bulk_create(authors)
