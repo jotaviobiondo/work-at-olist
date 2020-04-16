@@ -40,6 +40,9 @@ class Author(AbstractBaseModel):
         if self.name:
             self.name = self.name.strip()
 
+    def unique_error_message(self, model_class, unique_check):
+        return f'Author with the name "{self.name}" already exists.'
+
     @staticmethod
     @transaction.atomic
     def bulk_create(author_names: List[str]) -> List[Author]:
