@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import datetime
 import uuid
 from typing import List
 
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
@@ -11,6 +13,12 @@ from django.utils.translation import gettext_lazy as _
 def validate_is_not_blank(value: str):
     if value is None or value.strip() == '':
         raise ValidationError(_('This field cannot be blank.'), params={'value': value})
+
+
+def validate_earlier_than_current_year(value: int):
+    today = datetime.date.today()
+    if value > today.year:
+        raise ValidationError(_('%(value)s must be earlier or equal to current year.'), params={'value': value})
 
 
 class AbstractBaseModel(models.Model):
@@ -52,3 +60,23 @@ class Author(AbstractBaseModel):
             author.full_clean()
 
         return Author.objects.bulk_create(authors)
+
+
+class Book(AbstractBaseModel):
+    name = models.CharField(max_length=50, validators=[validate_is_not_blank])
+    edition = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(limit_value=1)])
+    publication_year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(limit_value=1), validate_earlier_than_current_year]
+    )
+    authors = models.ManyToManyField(Author)
+
+    class Meta:
+        verbose_name = 'book'
+        verbose_name_plural = 'books'
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        if self.name:
+            self.name = self.name.strip()
