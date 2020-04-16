@@ -1,6 +1,7 @@
 import csv
 from typing import List
 
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
@@ -32,7 +33,10 @@ class Command(BaseCommand):
     def import_authors_from_file_and_save_to_database(self, filepath: str) -> List[Author]:
         names = self.get_authors_names_from_file(filepath)
 
-        return Author.bulk_create(names)
+        try:
+            return Author.bulk_create(names)
+        except ValidationError as e:
+            raise CommandError(e.messages)
 
     def get_authors_names_from_file(self, filepath: str) -> List[str]:
         try:
