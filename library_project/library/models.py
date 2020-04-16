@@ -64,7 +64,7 @@ class Author(AbstractBaseModel):
 
 class Book(AbstractBaseModel):
     name = models.CharField(max_length=50, validators=[validate_is_not_blank])
-    edition = models.PositiveSmallIntegerField(default=1, validators=[MinValueValidator(limit_value=1)])
+    edition = models.PositiveSmallIntegerField(validators=[MinValueValidator(limit_value=1)])
     publication_year = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(limit_value=1), validate_earlier_than_current_year]
     )
