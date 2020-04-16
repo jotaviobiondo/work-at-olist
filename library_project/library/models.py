@@ -3,7 +3,14 @@ from __future__ import annotations
 import uuid
 from typing import List
 
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.utils.translation import gettext_lazy as _
+
+
+def validate_is_not_blank(value: str):
+    if value is None or value.strip() == '':
+        raise ValidationError(_('This field cannot be blank.'), params={'value': value})
 
 
 class AbstractBaseModel(models.Model):
@@ -14,9 +21,13 @@ class AbstractBaseModel(models.Model):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
 
 class Author(AbstractBaseModel):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, validators=[validate_is_not_blank])
 
     class Meta:
         verbose_name = 'author'
@@ -24,6 +35,10 @@ class Author(AbstractBaseModel):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.name:
+            self.name = self.name.strip()
 
     @staticmethod
     @transaction.atomic
