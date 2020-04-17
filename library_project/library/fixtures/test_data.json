@@ -1,0 +1,127 @@
+[
+  {
+    "model": "library.author",
+    "pk": "0a6eaa31-ef4d-4bf7-981f-83754c066270",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "Chetan Giridhar"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": "4c3e5428-48d5-49e9-8c63-dcf075728bcf",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "Luciano Ramalho"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": "8435e74c-9ca4-444a-9c00-1f5583d9a737",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "Brian K. Jones"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": "90e314bf-461e-4f3d-bb22-1312781447b5",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "J.K Rowling"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": "ccbd15b9-e378-47e4-84c3-a71d991152ae",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "David Beazley"
+    }
+  },
+  {
+    "model": "library.author",
+    "pk": "d5b4073c-e5a0-4ef1-8e76-bd628321b8d6",
+    "fields": {
+      "created_at": "2020-04-14T23:44:24.153Z",
+      "updated_at": "2020-04-14T23:44:24.153Z",
+      "name": "Osvaldo Santana Neto"
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": "131404ed-fc48-413b-800a-2f0555ede741",
+    "fields": {
+      "created_at": "2020-04-15T00:08:04.595Z",
+      "updated_at": "2020-04-15T00:39:40.193Z",
+      "name": "Python Cookbook",
+      "edition": 3,
+      "publication_year": 2013,
+      "authors": [
+        "8435e74c-9ca4-444a-9c00-1f5583d9a737",
+        "ccbd15b9-e378-47e4-84c3-a71d991152ae"
+      ]
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": "648b4350-6d06-4a9f-bd29-880bbe4c8fd6",
+    "fields": {
+      "created_at": "2020-04-15T00:41:09.905Z",
+      "updated_at": "2020-04-15T00:41:09.905Z",
+      "name": "Harry Potter and the Philosopher's Stone ",
+      "edition": 1,
+      "publication_year": 1997,
+      "authors": [
+        "90e314bf-461e-4f3d-bb22-1312781447b5"
+      ]
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": "77dd0589-1fc7-46e6-b6e4-95d57890e096",
+    "fields": {
+      "created_at": "2020-04-15T00:38:22.349Z",
+      "updated_at": "2020-04-15T00:38:22.349Z",
+      "name": "Python: Master the Art of Design Patterns",
+      "edition": 1,
+      "publication_year": 2016,
+      "authors": [
+        "0a6eaa31-ef4d-4bf7-981f-83754c066270"
+      ]
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": "a78cfe36-ee97-4818-ae5b-d92c5abd92a5",
+    "fields": {
+      "created_at": "2020-04-14T23:58:26.199Z",
+      "updated_at": "2020-04-14T23:58:26.199Z",
+      "name": "Fluent Python",
+      "edition": 1,
+      "publication_year": 2015,
+      "authors": [
+        "4c3e5428-48d5-49e9-8c63-dcf075728bcf"
+      ]
+    }
+  },
+  {
+    "model": "library.book",
+    "pk": "c4217830-b34b-4cb1-ae09-a6832e5efab1",
+    "fields": {
+      "created_at": "2020-04-15T00:06:03.696Z",
+      "updated_at": "2020-04-15T00:06:03.697Z",
+      "name": "Python Essential Reference",
+      "edition": 4,
+      "publication_year": 2009,
+      "authors": [
+        "ccbd15b9-e378-47e4-84c3-a71d991152ae"
+      ]
+    }
+  }
+]
