@@ -51,22 +51,12 @@ class BaseRestApiTest(APITestCase):
 
 
 class AuthorsApiTest(BaseRestApiTest):
-    author_names = [
-        'Luciano Ramalho',
-        'Osvaldo Santana Neto',
-        'David Beazley',
-        'Chetan Giridhar',
-        'Brian K. Jones',
-        'J.K Rowling'
-    ]
+    fixtures = ['test_data']
 
     base_url = '/api/authors/'
 
     @classmethod
     def setUpTestData(cls):
-        for name in cls.author_names:
-            Author.objects.create(name=name)
-
         cls.authors = Author.objects.all()
 
     def test_list(self):
