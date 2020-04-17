@@ -16,7 +16,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
+    queryset = Book.objects.all().prefetch_related('authors')
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = BookFilter
