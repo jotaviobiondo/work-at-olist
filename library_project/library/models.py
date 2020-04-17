@@ -1,24 +1,12 @@
 from __future__ import annotations
 
-import datetime
 import uuid
 from typing import List
 
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
-from django.utils.translation import gettext_lazy as _
 
-
-def validate_is_not_blank(value: str):
-    if value is None or value.strip() == '':
-        raise ValidationError(_('This field cannot be blank.'), params={'value': value})
-
-
-def validate_earlier_than_current_year(value: int):
-    today = datetime.date.today()
-    if value > today.year:
-        raise ValidationError(_('%(value)s must be earlier or equal to current year.'), params={'value': value})
+from library.validators import validate_is_not_blank, validate_earlier_than_current_year
 
 
 class AbstractBaseModel(models.Model):
