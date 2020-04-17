@@ -68,7 +68,7 @@ class Book(AbstractBaseModel):
     publication_year = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(limit_value=1), validate_earlier_than_current_year]
     )
-    authors = models.ManyToManyField(Author)
+    authors = models.ManyToManyField(Author, related_name='books')
 
     class Meta:
         verbose_name = 'book'
