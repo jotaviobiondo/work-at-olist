@@ -19,6 +19,9 @@ class ImportAuthorsTest(TestCase):
         self.authors = Author.objects.all()
 
     def tearDown(self):
+        if not self.csvfile.closed:
+            self.csvfile.close()
+
         os.unlink(self.filename)
 
     def write_content_to_file(self, content: List[str], header_column='name'):
@@ -31,8 +34,11 @@ class ImportAuthorsTest(TestCase):
 
         self.csvfile.close()
 
-    def call_import_authors_command(self):
-        command_args = [self.filename]
+    def call_import_authors_command(self, filename=None):
+        if filename is None:
+            filename = self.filename
+
+        command_args = [filename]
 
         call_command('import_authors', *command_args, stdout=StringIO())
 
@@ -88,3 +94,9 @@ class ImportAuthorsTest(TestCase):
             self.call_import_authors_command()
 
         self.assertEqual(self.authors.count(), len(author_names))
+
+    def test_nonexistent_file(self):
+        with self.assertRaises(CommandError):
+            self.call_import_authors_command('nonexistent_file.csv')
+
+        self.assertEqual(self.authors.count(), 0)
