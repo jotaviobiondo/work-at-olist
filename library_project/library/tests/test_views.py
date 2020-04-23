@@ -80,11 +80,18 @@ class AuthorsApiTest(BaseRestApiTest):
     def setUpTestData(cls):
         cls.authors = Author.objects.all()
 
+    def author_to_json(self, author: Author):
+        return {
+            'id': str(author.id),
+            'name': author.name
+        }
+
     def test_list(self):
         response = self.list()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], self.authors.count())
+        self.assertGreater(len(response.data['results']), 0)
 
     def test_list_page_query_params(self):
         self.assertPaginatedListQueryParams('page', 'page_size')
@@ -94,42 +101,34 @@ class AuthorsApiTest(BaseRestApiTest):
 
         response = self.retrieve(author.id)
 
-        serializable_fields = ['id', 'name']
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertCountEqual(response.data.keys(), serializable_fields)
-        self.assertEqual(response.data['id'], str(author.id))
-        self.assertEqual(response.data['name'], author.name)
+        self.assertDictEqual(response.data, self.author_to_json(author))
 
     def test_retrieve_nonexistent(self):
         random_uuid = uuid.uuid4()
         response = self.retrieve(random_uuid)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assert404NotFound(response)
 
     def test_search_name(self):
         author = self.authors.first()
 
-        partial_name = author.name[:5]
-
-        query = {'name': partial_name}
+        query = {'name': author.name[:3]}
         response = self.list(query)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
         results = response.data['results']
-        matched_result = next((result for result in results if result['id'] == str(author.id)), None)
 
-        self.assertIsNotNone(matched_result)
-        self.assertEqual(matched_result['name'], author.name)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(results), 1)
 
-    def test_search_name_nonexistent(self):
+        for result in results:
+            self.assertIn(query['name'].lower(), result['name'].lower())
+
+    def test_search_nonexistent_name(self):
         query = {'name': 'Nonexistent Author'}
         response = self.list(query)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 0)
-        self.assertListEqual(response.data['results'], [])
+        self.assertSearchHasNoResults(response)
 
 
 class BooksApiTest(BaseRestApiTest):
@@ -162,11 +161,10 @@ class BooksApiTest(BaseRestApiTest):
 
     def test_list(self):
         response = self.list()
-        data = response.data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(data['count'], self.books.count())
-        self.assertGreater(len(data['results']), 0)
+        self.assertEqual(response.data['count'], self.books.count())
+        self.assertGreater(len(response.data['results']), 0)
 
     def test_list_page_query_params(self):
         self.assertPaginatedListQueryParams('page', 'page_size')
