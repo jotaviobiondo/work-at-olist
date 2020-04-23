@@ -16,9 +16,10 @@ class AuthorModelTest(TestCase):
         cls.existing_author = cls.authors.first()
 
     def test_create_valid_author(self):
-        Author.objects.create(name='George R. R. Martin')
+        author = Author.objects.create(name='George R. R. Martin')
 
         self.assertEqual(self.authors.count(), self.authors_count_before + 1)
+        self.assertEqual(str(author), author.name)
 
     def test_create_existing_author(self):
         with self.assertRaises(ValidationError):
@@ -77,9 +78,10 @@ class BookModelTest(TestCase):
         return book
 
     def test_create_valid_book(self):
-        self.create_test_book()
+        book = self.create_test_book()
 
         self.assertEqual(self.books.count(), self.books_count_before + 1)
+        self.assertEqual(str(book), book.name)
 
     def test_create_book_sanitize_name(self):
         name = '  Test Book  \t'
