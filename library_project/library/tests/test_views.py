@@ -19,16 +19,10 @@ class BaseRestApiTest(APITestCase):
     def retrieve(self, resource_id):
         return self.client.get(self.base_url + f'{resource_id}/', format='json')
 
-    def create(self, payload=None):
-        if payload is None:
-            payload = {}
-
+    def create(self, payload):
         return self.client.post(self.base_url, payload, format='json')
 
-    def update(self, resource_id, payload=None):
-        if payload is None:
-            payload = {}
-
+    def update(self, resource_id, payload):
         return self.client.put(self.base_url + f'{resource_id}/', payload, format='json')
 
     def delete(self, resource_id):
@@ -292,8 +286,20 @@ class BooksApiTest(BaseRestApiTest):
         self.assertEqual(result['publication_year'], query['publication_year'])
         self.assertIn(query['author'], author_names)
 
-    def test_search_by_multiple_fields_fail(self):
-        pass
+    def test_search_nonexistent_by_multiple_fields(self):
+        book = self.books.first()
+
+        wrong_edition = book.edition + 100
+        query = {
+            'name': book.name,
+            'edition': wrong_edition,
+            'publication_year': book.publication_year,
+            'author': book.authors.first().name
+        }
+
+        response = self.list(query)
+
+        self.assertSearchHasNoResults(response)
 
     def test_create(self):
         author = self.authors.first()
