@@ -13,3 +13,4 @@ staticfiles/
 *.db
 db.sqlite3
 venv
+TODO.md
