@@ -31,8 +31,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -55,6 +53,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Add remote origin Heroku
       run: |
         git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
