@@ -46,19 +46,3 @@ jobs:
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/library
       run: |
         python manage.py test
-
-  deploy:
-    name: Deploy to Heroku
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Add remote origin Heroku
-      run: |
-        git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-    - name: Deploy to Heroku
-      run: |
-        git push heroku HEAD:master -f
