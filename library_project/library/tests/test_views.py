@@ -124,6 +124,28 @@ class AuthorsApiTest(BaseRestApiTest):
 
         self.assertSearchHasNoResults(response)
 
+    def test_create_not_allowed(self):
+        new_author = {'name': 'New Author'}
+
+        response = self.create(new_author)
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_update_not_allowed(self):
+        author = self.authors.first()
+        updated_author_payload = {'name': 'Updated Author'}
+
+        response = self.update(author.id, updated_author_payload)
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_not_allowed(self):
+        author = self.authors.first()
+
+        response = self.delete(author.id)
+
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
 
 class BooksApiTest(BaseRestApiTest):
     fixtures = ['test_data']
