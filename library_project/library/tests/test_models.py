@@ -3,7 +3,7 @@ import datetime
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from library.models import Author, Book
+from library.models import Author, Book, strip_and_remove_duplicate_spaces
 
 
 class AuthorModelTest(TestCase):
@@ -38,11 +38,11 @@ class AuthorModelTest(TestCase):
         self.assertEqual(self.authors.count(), self.authors_count_before)
 
     def test_create_author_sanitize_name(self):
-        name = '  George R. R. Martin  \t'
+        name = '  George   R. \t  R. Martin  \t'
         author = Author.objects.create(name=name)
 
         self.assertEqual(self.authors.count(), self.authors_count_before + 1)
-        self.assertEqual(name.strip(), author.name)
+        self.assertEqual('George R. R. Martin', author.name)
 
     def test_bulk_create_valid_authors(self):
         new_authors_names = ['William Shakespeare', 'William Faulkner', 'Henry James', 'Jane Austen']
@@ -84,11 +84,11 @@ class BookModelTest(TestCase):
         self.assertEqual(str(book), book.name)
 
     def test_create_book_sanitize_name(self):
-        name = '  Test Book  \t'
+        name = '  Test  \t  Book  \t'
         book = self.create_test_book(name=name)
 
         self.assertEqual(self.books.count(), self.books_count_before + 1)
-        self.assertEqual(name.strip(), book.name)
+        self.assertEqual('Test Book', book.name)
 
     def test_create_book_with_blank_name(self):
         blank_names = ['', ' ', '\t', '\n', None]
@@ -122,3 +122,11 @@ class BookModelTest(TestCase):
                     self.create_test_book(publication_year=invalid_year)
 
         self.assertEqual(self.books.count(), self.books_count_before)
+
+
+class ModelUtilsTest(TestCase):
+    def test_strip_and_remove_duplicate_spaces(self):
+        self.assertEqual('', strip_and_remove_duplicate_spaces(''))
+        self.assertEqual('', strip_and_remove_duplicate_spaces(' \t  \n'))
+        self.assertEqual('Test String', strip_and_remove_duplicate_spaces('Test String'))
+        self.assertEqual('Test String', strip_and_remove_duplicate_spaces(' \tTest \t  \n String \t'))
