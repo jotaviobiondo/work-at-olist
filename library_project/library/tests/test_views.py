@@ -111,9 +111,11 @@ class AuthorsApiTest(BaseRestApiTest):
         response = self.list(query)
 
         results = response.data['results']
+        db_filter_count = self.authors.filter(name__icontains=query['name']).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
 
         for result in results:
             self.assertIn(query['name'].lower(), result['name'].lower())
@@ -206,9 +208,11 @@ class BooksApiTest(BaseRestApiTest):
         response = self.list(query)
 
         results = response.data['results']
+        db_filter_count = self.books.filter(name__icontains=query['name']).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
 
         for result in results:
             self.assertIn(query['name'].lower(), result['name'].lower())
@@ -224,9 +228,11 @@ class BooksApiTest(BaseRestApiTest):
         response = self.list(query)
 
         results = response.data['results']
+        db_filter_count = self.books.filter(edition=query['edition']).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
 
         for result in results:
             self.assertEqual(result['edition'], query['edition'])
@@ -244,9 +250,11 @@ class BooksApiTest(BaseRestApiTest):
         response = self.list(query)
 
         results = response.data['results']
+        db_filter_count = self.books.filter(publication_year=query['publication_year']).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
 
         for result in results:
             self.assertEqual(result['publication_year'], query['publication_year'])
@@ -265,9 +273,11 @@ class BooksApiTest(BaseRestApiTest):
         response = self.list(query)
 
         results = response.data['results']
+        db_filter_count = self.books.filter(authors__name__icontains=query['author']).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
 
         for result in results:
             authors = result['authors']
@@ -300,9 +310,16 @@ class BooksApiTest(BaseRestApiTest):
         results = response.data['results']
         result = results[0]
         author_names = [author['name'] for author in result['authors']]
+        db_filter_count = self.books.filter(
+            name__icontains=query['name'],
+            edition=query['edition'],
+            publication_year=query['publication_year'],
+            authors__name__icontains=query['author'],
+        ).count()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(results), 1)
+        self.assertEqual(response.data['count'], db_filter_count)
         self.assertEqual(result['name'], query['name'])
         self.assertEqual(result['edition'], query['edition'])
         self.assertEqual(result['publication_year'], query['publication_year'])
