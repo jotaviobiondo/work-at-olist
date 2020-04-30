@@ -34,7 +34,7 @@ class Author(AbstractBaseModel):
 
     def clean(self):
         if self.name:
-            self.name = self.name.strip()
+            self.name = strip_and_remove_duplicate_spaces(self.name)
 
     def unique_error_message(self, model_class, unique_check):
         return f'Author with the name "{self.name}" already exists.'
@@ -67,4 +67,11 @@ class Book(AbstractBaseModel):
 
     def clean(self):
         if self.name:
-            self.name = self.name.strip()
+            self.name = strip_and_remove_duplicate_spaces(self.name)
+
+
+def strip_and_remove_duplicate_spaces(value: str) -> str:
+    """
+    Return a copy of the string removing all leading, trailing and duplicate whitespace in the middle.
+    """
+    return ' '.join(value.split())
