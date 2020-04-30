@@ -44,6 +44,17 @@ class AuthorModelTest(TestCase):
         self.assertEqual(self.authors.count(), self.authors_count_before + 1)
         self.assertEqual('George R. R. Martin', author.name)
 
+    def test_name_max_length(self):
+        max_length = 100
+        valid_name = 'a' * max_length
+        invalid_name = 'a' * (max_length + 1)
+
+        author = Author.objects.create(name=valid_name)
+        self.assertEqual(valid_name, author.name)
+
+        with self.assertRaises(ValidationError):
+            Author.objects.create(name=invalid_name)
+
     def test_bulk_create_valid_authors(self):
         new_authors_names = ['William Shakespeare', 'William Faulkner', 'Henry James', 'Jane Austen']
         new_authors = Author.bulk_create(new_authors_names)
@@ -99,6 +110,17 @@ class BookModelTest(TestCase):
                     self.create_test_book(name=blank_name)
 
         self.assertEqual(self.books.count(), self.books_count_before)
+
+    def test_name_max_length(self):
+        max_length = 50
+        valid_name = 'a' * max_length
+        invalid_name = 'a' * (max_length + 1)
+
+        book = self.create_test_book(name=valid_name)
+        self.assertEqual(valid_name, book.name)
+
+        with self.assertRaises(ValidationError):
+            self.create_test_book(name=invalid_name)
 
     def test_create_book_with_invalid_edition(self):
         invalid_editions = [-1, None]
