@@ -1,3 +1,68 @@
+# Library API 
+![Django CI](https://github.com/jotaviobiondo/work-at-olist/workflows/Django%20CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/jotaviobiondo/work-at-olist/badge.svg?branch=master)](https://coveralls.io/github/jotaviobiondo/work-at-olist?branch=master)
+
+This project is an implementation of [this test specification](#work-at-olist). It's a API to manage a library, providing operations to store and retrieve data of authors and books.
+
+Application running at https://jotaviobiondo-library.herokuapp.com/
+
+REST API Docs [here](API.md).
+
+## Usage
+
+### Requirements
+
+- Python 3.8+
+- PIP
+
+### Running locally
+
+1. Clone this repository.
+2. Create virtualenv with `python -m venv library_venv`.
+3. Activate virtualenv:
+    - Unix or MacOS: `source venv/Scripts/activate`.
+    - Windows: `venv\Scripts\activate`.
+4. Install requirements with `pip install -r requirements-local.txt`.
+5. Use the `local.env` file as a template to create a `.env` file.
+6. Run `python library_project/manage.py migrate` to create the database structure.
+7. Run the app with `python library_project/manage.py runserver`.
+
+The app will run on http://localhost:8000/.
+
+### Running tests
+
+Execute the following command to run the tests:
+
+```
+python library_project/manage.py test library
+```
+
+## Importing Authors
+
+To import a .csv file containing authors data, run the command `python library_project/manage.py import_authors <file.csv>` where `<file.csv>` is the path to the file to be imported.
+
+For example, assuming there is a file named *authors.csv* in project's root directory, you can run the following command:
+
+```
+python library_project/manage.py import_authors authors.csv
+```
+
+## Development
+
+I developed this project using PyCharm IDE on PC running Windows 10. I used some parts of [this template](https://github.com/osantana/quickstartup-template), from [@osantana](https://github.com/osantana), mainly for configuring the application to deploy to [Heroku](https://www.heroku.com/) (the PaaS provider of choice).
+
+These are the libraries I used to build this project:
+
+- [Django](https://www.djangoproject.com/): Framework to build web apps more quickly with Python.
+- [django-rest-framework](https://www.django-rest-framework.org/): Library to help building REST APIs with django.
+- [django-filter](https://github.com/carltongibson/django-filter): Library to help creating filters from URL parameters.
+- [drf-yasg](https://github.com/axnsan12/drf-yasg): Library to generate Swagger/OpenAPI 2.0 specifications from a Django Rest Framework API.
+- [dj-database-url](https://github.com/jacobian/dj-database-url): Django utility that allows to utilize the 12factor inspired DATABASE_URL environment variable to configure Django applications.
+- [prettyconf](https://github.com/osantana/prettyconf): Python library to make easy the separation of configuration and code following the recommendations of 12 Factor's topic about configs.
+- [psycopg2](https://www.psycopg.org/): A PostgreSQL adapter for Python.
+- [coverage](https://github.com/nedbat/coveragepy/tree/coverage-5.1): Library to measure code coverage, typically during test execution.
+
+
+
 # Work at Olist
 
 [Olist](https://olist.com/) is a company that offers an integration platform for sellers and marketplaces allowing them to sell their products across multiple channels.
