@@ -205,6 +205,46 @@ Response example:
 }
 ```
 
+### Partial update book
+```
+PATCH /api/books/{book_id}
+```
+
+Parameters:
+- `book_id`: the id of the book to be updated.
+
+Payload example:
+```jsonc
+{
+    "name": "Updated Book",    // Optional
+    "edition": 2,              // Optional
+    "publication_year": 2020,  // Optional
+    "authors": [               // Optional (when specified, can not be empty)
+        "f50eaf41-b940-4fa0-be67-f1e70c197d53"
+    ]
+}
+```
+
+All fields in the payload are optional, that is, it is not necessary to inform all fields to update the book.
+
+Response example:
+
+`HTTP 200 OK`
+```jsonc
+{
+    "id": "293186ef-046d-4c39-bf47-9dba8b84a6e6",
+    "name": "Updated Book",
+    "edition": 2,
+    "publication_year": 2020,
+    "authors": [
+        {
+            "id": "f50eaf41-b940-4fa0-be67-f1e70c197d53",
+            "name": "Author Name"
+        }
+    ]
+}
+```
+
 ### Delete book
 ```
 DELETE /api/books/{book_id}
