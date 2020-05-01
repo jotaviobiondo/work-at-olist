@@ -25,6 +25,9 @@ class BaseRestApiTest(APITestCase):
     def update(self, resource_id, payload):
         return self.client.put(self.base_url + f'{resource_id}/', payload, format='json')
 
+    def partial_update(self, resource_id, payload):
+        return self.client.patch(self.base_url + f'{resource_id}/', payload, format='json')
+
     def delete(self, resource_id):
         return self.client.delete(self.base_url + f'{resource_id}/', format='json')
 
@@ -430,21 +433,47 @@ class BooksApiTest(BaseRestApiTest):
 
         fields_with_errors = ['name', 'edition', 'publication_year', 'authors']
 
-        books_count_before = self.books.count()
-
         for invalid_book in invalid_updated_book_payloads:
             with self.subTest(invalid_author=invalid_book):
                 response = self.update(book_to_update.id, invalid_book)
                 not_updated_book = self.books.get(pk=book_to_update.id)
 
                 self.assert400BadRequestWithErrors(response, fields_with_errors)
-                self.assertEqual(book_to_update.id, not_updated_book.id)
-                self.assertEqual(book_to_update.name, not_updated_book.name)
-                self.assertEqual(book_to_update.edition, not_updated_book.edition)
-                self.assertEqual(book_to_update.publication_year, not_updated_book.publication_year)
-                self.assertSetEqual(set(book_to_update.authors.all()), set(not_updated_book.authors.all()))
+                self.assertDictEqual(self.book_to_json(book_to_update), self.book_to_json(not_updated_book))
 
-        self.assertEqual(self.books.count(), books_count_before)
+    def test_partial_update(self):
+        book_to_update = self.books.first()
+        book_before_update_json = self.book_to_json(book_to_update)
+
+        field_updated = 'name'
+        fields_not_updated = ['edition', 'publication_year', 'authors']
+        payload = {field_updated: 'Partially Updated Book'}
+
+        response = self.partial_update(book_to_update.id, payload)
+        data = response.data
+
+        book_updated = self.books.get(pk=book_to_update.id)
+        book_updated_json = self.book_to_json(book_updated)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data[field_updated], payload[field_updated])
+        self.assertEqual(data[field_updated], book_updated_json[field_updated])
+
+        for field in fields_not_updated:
+            self.assertEqual(data[field], book_before_update_json[field])
+            self.assertEqual(book_before_update_json[field], book_updated_json[field])
+
+    def test_partial_updated_invalid(self):
+        book_to_update = self.books.first()
+
+        payload = {'name': ''}
+
+        response = self.partial_update(book_to_update.id, payload)
+
+        not_updated_book = self.books.get(pk=book_to_update.id)
+
+        self.assert400BadRequestWithErrors(response, ['name'])
+        self.assertDictEqual(self.book_to_json(book_to_update), self.book_to_json(not_updated_book))
 
     def test_delete(self):
         books_count_before = self.books.count()
